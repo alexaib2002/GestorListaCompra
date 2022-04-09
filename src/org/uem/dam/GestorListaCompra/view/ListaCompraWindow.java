@@ -5,7 +5,6 @@ import org.uem.dam.GestorListaCompra.model.Locale;
 import org.uem.dam.GestorListaCompra.model.Producto;
 
 import javax.swing.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,6 +23,8 @@ public class ListaCompraWindow extends JFrame {
     private JLabel prodNameLbl;
     private JLabel prodCantLbl;
     private JLabel errLbl;
+    private JTextArea tipsTxtArea;
+    private JCheckBox setSelMult;
 
     private DefaultListModel<String> prodListModel;
     private SpinnerNumberModel cantSpinnerModel;
@@ -58,8 +59,11 @@ public class ListaCompraWindow extends JFrame {
         return prodListModel;
     }
 
+    public JList getProdList() {
+        return prodList;
+    }
+
     public void addNewProd(Producto producto) {
-        System.out.printf("Insertando nuevo producto %s\n", producto.getNombre());
         prodListModel.addElement(producto.toString());
     }
 
@@ -72,9 +76,10 @@ public class ListaCompraWindow extends JFrame {
         setContentPane(mainPane);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle(Locale.WIN_TITLE);
+        prodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setVisibleAddMenu(false);
         initModels();
-        initNames();
+        bindTextStrings();
         updateSize();
     }
 
@@ -102,7 +107,10 @@ public class ListaCompraWindow extends JFrame {
         unitCBox.setModel(unitBoxModel);
     }
 
-    private void initNames() {
+    private void bindTextStrings() {
+        tipsTxtArea.setText(Locale.TIPS_TXT);
+
+        setSelMult.setText(Locale.CHK_SET_MULT);
         addButton.setText(Locale.BTN_ADD_ITEM);
         remButton.setText(Locale.BTN_REM_ITEM);
         selallButton.setText(Locale.BTN_SELALL_ITEM);

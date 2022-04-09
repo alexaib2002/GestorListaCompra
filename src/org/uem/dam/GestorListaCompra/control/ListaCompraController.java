@@ -7,6 +7,7 @@ import org.uem.dam.GestorListaCompra.view.ListaCompraWindow;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListaCompraController implements ActionListener {
     private ListaCompraWindow window;
@@ -19,6 +20,7 @@ public class ListaCompraController implements ActionListener {
     public void actionPerformed(ActionEvent actionEvent) {
         // resetear ultimo error mostrado
         window.showErrorMssg("");
+        window.setVisibleAddMenu(false);
 
         String cmd = actionEvent.getActionCommand();
 
@@ -36,7 +38,7 @@ public class ListaCompraController implements ActionListener {
                 confirmAddProducto();
                 break;
             default:
-                System.out.println(String.format("[Controller] Cannot handle event %s", cmd));
+                System.out.println(String.format("[ ATENCIÓN ] Evento desconocido, no será gestionado %s", cmd));
         }
     }
 
@@ -45,22 +47,34 @@ public class ListaCompraController implements ActionListener {
     }
 
     private void remProducto() {
-        // TODO Eliminar objeto seleccionado
+        List<String> selProds = window.getProdList().getSelectedValuesList();
+        for (String prod: selProds) {
+            window.getProdListModel().removeElement(prod);
+            System.out.println(String.format("Eliminando producto %s", prod));
+        }
     }
 
     private void selAllProducto() {
-        // TODO Seleccionar todos los objetos de la lista
+        int[] idxs = new int[window.getProdListModel().size()];
+        for (int i = 0; i < window.getProdListModel().size(); i++) {
+            idxs[i] = i;
+        }
+        window.getProdList().setSelectedIndices(idxs);
+        System.out.println("Todos los productos seleccionados por petición");
     }
 
     private void confirmAddProducto() {
         ArrayList<String> productoAttrs = window.getProdValues();
         if (!productoAttrs.get(0).isEmpty() || !productoAttrs.get(0).isBlank()) { // comprobar si el nombre esta vacio
+            System.out.printf("Insertando nuevo producto %s\n", productoAttrs.get(0));
             for (Object producto: window.getProdListModel().toArray() // buscar si hay algun elemento con el mismo nombre en la lista
                  ) {
                 if (producto instanceof String) {
                     if (((String) producto).contains(productoAttrs.get(0))) {
                         window.getProdListModel().removeElement(producto); // si existe, se asume que el usuario quiere actualizar sus datos
-                        System.out.println(String.format("Actualizando producto %s", productoAttrs.get(0)));
+                        System.out.println(String.format(
+                                "[ ATENCIÓN ] El producto ya existe. Actualizando producto %s", productoAttrs.get(0))
+                        );
                     }
                 }
             }
@@ -71,6 +85,7 @@ public class ListaCompraController implements ActionListener {
             ));
         } else {
             window.showErrorMssg(Locale.ERR_STR_EMPTY);
+            System.out.println("Inserción denegada");
         }
     }
 }
