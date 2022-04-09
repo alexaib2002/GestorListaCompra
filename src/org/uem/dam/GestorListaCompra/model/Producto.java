@@ -3,9 +3,9 @@ package org.uem.dam.GestorListaCompra.model;
 public class Producto {
     private String nombre;
     private int cantidad;
-    private int uds; // FIXME uds no es un entero, es String
+    private String uds;
 
-    public Producto(String nombre, int cantidad, int uds) {
+    public Producto(String nombre, int cantidad, String uds) {
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.uds = uds;
@@ -17,6 +17,6 @@ public class Producto {
 
     @Override
     public String toString() {
-        return nombre + " ( cant: " + cantidad + ", uds: " + uds+ ")";
+        return String.format("%s (%s %s)", nombre, cantidad, uds);
     }
 }

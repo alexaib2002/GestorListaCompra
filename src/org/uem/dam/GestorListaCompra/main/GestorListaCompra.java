@@ -13,8 +13,6 @@ public class GestorListaCompra {
                 ListaCompraController controller = new ListaCompraController(window);
                 window.setController(controller);
                 window.setVisible(true);
-
-                window.addNewProd(new Producto("testing", 5, 19));
             }
         });
     }
