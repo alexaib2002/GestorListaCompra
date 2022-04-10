@@ -1,6 +1,7 @@
 package org.uem.dam.GestorListaCompra.main;
 
 import org.uem.dam.GestorListaCompra.control.ListaCompraController;
+import org.uem.dam.GestorListaCompra.model.ListaCompra;
 import org.uem.dam.GestorListaCompra.model.Producto;
 import org.uem.dam.GestorListaCompra.view.ListaCompraWindow;
 
@@ -10,7 +11,10 @@ public class GestorListaCompra {
             @Override
             public void run() {
                 ListaCompraWindow window = new ListaCompraWindow();
-                ListaCompraController controller = new ListaCompraController(window);
+                ListaCompraController controller = new ListaCompraController(
+                        window,
+                        new ListaCompra()
+                );
                 window.setController(controller);
                 window.setVisible(true);
             }

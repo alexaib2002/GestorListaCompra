@@ -1,5 +1,6 @@
 package org.uem.dam.GestorListaCompra.control;
 
+import org.uem.dam.GestorListaCompra.model.ListaCompra;
 import org.uem.dam.GestorListaCompra.model.Locale;
 import org.uem.dam.GestorListaCompra.model.Producto;
 import org.uem.dam.GestorListaCompra.view.ListaCompraWindow;
@@ -8,13 +9,14 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListaCompraController implements ActionListener {
-    private ListaCompraWindow window;
+    private final ListaCompraWindow window;
+    private final ListaCompra listaCompra;
 
-    public ListaCompraController(ListaCompraWindow window) {
+    public ListaCompraController(ListaCompraWindow window, ListaCompra listaCompra) {
         this.window = window;
+        this.listaCompra = listaCompra;
     }
 
     @Override
@@ -55,10 +57,10 @@ public class ListaCompraController implements ActionListener {
     }
 
     private void remProducto() {
-        List<String> selProds = window.getProdList().getSelectedValuesList();
-        for (String prod: selProds) {
-            window.getProdListModel().removeElement(prod);
-            System.out.println(String.format("Eliminando producto %s", prod));
+        while (window.getProdList().getSelectedIndex() != -1) {
+            System.out.println(String.format("Eliminando producto %s", listaCompra.toArrayList().get(window.getProdList().getSelectedIndex())));
+            listaCompra.rmProducto(window.getProdList().getSelectedIndex());
+            window.getProdListModel().remove(window.getProdList().getSelectedIndex());
         }
     }
 
@@ -75,22 +77,29 @@ public class ListaCompraController implements ActionListener {
         ArrayList<String> productoAttrs = window.getProdValues();
         if (!productoAttrs.get(0).isEmpty() || !productoAttrs.get(0).isBlank()) { // comprobar si el nombre esta vacio
             System.out.printf("Insertando nuevo producto %s\n", productoAttrs.get(0));
-            for (Object producto: window.getProdListModel().toArray() // buscar si hay algun elemento con el mismo nombre en la lista
+            ArrayList<Integer> productoReps = new ArrayList<>();
+            for (Producto producto: listaCompra.toArrayList() // buscar si hay algun elemento con el mismo nombre en la lista
                  ) {
-                if (producto instanceof String) {
-                    if (((String) producto).contains(productoAttrs.get(0))) {
-                        window.getProdListModel().removeElement(producto); // si existe, se asume que el usuario quiere actualizar sus datos
-                        System.out.println(String.format(
-                                "[ ATENCIÓN ] El producto ya existe. Actualizando producto %s", productoAttrs.get(0))
-                        );
-                    }
+                if (productoAttrs.get(0).equalsIgnoreCase(producto.getNombre())) {
+                    productoReps.add(listaCompra.toArrayList().indexOf(producto));
+                    System.out.println(String.format(
+                            "[ ATENCIÓN ] El producto ya existe. Actualizando producto %s", productoAttrs.get(0))
+                    );
                 }
             }
-            window.addNewProd(new Producto(
+            for (int idProd: productoReps
+                 ) {
+                window.getProdListModel().remove(idProd); // si existe, se asume que el usuario quiere actualizar sus datos
+                listaCompra.rmProducto(idProd);
+            }
+
+            Producto producto = new Producto(
                     productoAttrs.get(0),
                     Integer.parseInt(productoAttrs.get(1)),
                     productoAttrs.get(2)
-            ));
+            );
+            window.addNewProd(producto);
+            listaCompra.addProducto(producto);
         } else {
             window.showErrorMssg(Locale.ERR_STR_EMPTY);
             System.out.println("Inserción denegada");

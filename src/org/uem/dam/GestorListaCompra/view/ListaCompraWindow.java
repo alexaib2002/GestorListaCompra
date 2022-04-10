@@ -9,11 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ListaCompraWindow extends JFrame {
-    public enum SELECTION_TYPE {
-        SINGLE,
-        MULTIPLE
-    }
-
     private JPanel mainPane;
     private JPanel centeredPanel;
     private JList prodList;
@@ -174,7 +169,6 @@ public class ListaCompraWindow extends JFrame {
 
     private void updateSize() {
         pack();
-        //setMinimumSize(this.getSize());
     }
 
 }
