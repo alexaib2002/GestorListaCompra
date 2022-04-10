@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ListaCompraWindow extends JFrame {
+    public enum SELECTION_TYPE {
+        SINGLE,
+        MULTIPLE
+    }
+
     private JPanel mainPane;
     private JPanel centeredPanel;
     private JList prodList;
@@ -24,7 +29,9 @@ public class ListaCompraWindow extends JFrame {
     private JLabel prodCantLbl;
     private JLabel errLbl;
     private JTextArea tipsTxtArea;
-    private JCheckBox setSelMult;
+    private JCheckBox setSelMultChkBox;
+    private JButton helpButton;
+    private JPanel tipsPanel;
 
     private DefaultListModel<String> prodListModel;
     private SpinnerNumberModel cantSpinnerModel;
@@ -34,6 +41,26 @@ public class ListaCompraWindow extends JFrame {
 
     public ListaCompraWindow() {
         initComponents();
+    }
+
+    public void addNewProd(Producto producto) {
+        prodListModel.addElement(producto.toString());
+    }
+
+    public void showErrorMssg(String err) {
+        errLbl.setText(err);
+        updateSize();
+    }
+
+    public void updateLayout() {
+        if (prodList.getSelectionMode() == ListSelectionModel.SINGLE_SELECTION) {
+            selallButton.setVisible(false);
+            remButton.setText(Locale.BTN_REM_ITEM_SINGLE);
+        } else {
+            selallButton.setVisible(true);
+            remButton.setText(Locale.BTN_REM_ITEM_MULTI);
+        }
+        updateSize();
     }
 
     public void setController(ListaCompraController controller) {
@@ -47,12 +74,26 @@ public class ListaCompraWindow extends JFrame {
         updateSize();
     }
 
+    public void setVisibleTipsPanel(boolean visible) {
+        tipsPanel.setVisible(visible);
+        updateSize();
+    }
+
     public ArrayList<String> getProdValues() {
         return new ArrayList<String>(Arrays.asList(
                 prodNameTxt.getText(),
                 cantSpinner.getValue().toString(),
                 unitCBox.getModel().getSelectedItem().toString()
         ));
+    }
+
+    public int getSelectionMode() {
+        return prodList.getSelectionMode();
+    }
+
+    public void setSelectionMode(int selectionMode) {
+        this.prodList.setSelectionMode(selectionMode);
+        updateLayout();
     }
 
     public DefaultListModel<String> getProdListModel() {
@@ -63,13 +104,8 @@ public class ListaCompraWindow extends JFrame {
         return prodList;
     }
 
-    public void addNewProd(Producto producto) {
-        prodListModel.addElement(producto.toString());
-    }
-
-    public void showErrorMssg(String err) {
-        errLbl.setText(err);
-        updateSize();
+    public JPanel getTipsPanel() {
+        return tipsPanel;
     }
 
     private void initComponents() {
@@ -78,6 +114,8 @@ public class ListaCompraWindow extends JFrame {
         setTitle(Locale.WIN_TITLE);
         prodList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setVisibleAddMenu(false);
+        setVisibleTipsPanel(false);
+        updateLayout();
         initModels();
         bindTextStrings();
         updateSize();
@@ -107,14 +145,17 @@ public class ListaCompraWindow extends JFrame {
         unitCBox.setModel(unitBoxModel);
     }
 
+
     private void bindTextStrings() {
         tipsTxtArea.setText(Locale.TIPS_TXT);
 
-        setSelMult.setText(Locale.CHK_SET_MULT);
+        setSelMultChkBox.setText(Locale.CHK_SET_MULT);
+
         addButton.setText(Locale.BTN_ADD_ITEM);
-        remButton.setText(Locale.BTN_REM_ITEM);
+        remButton.setText(Locale.BTN_REM_ITEM_SINGLE);
         selallButton.setText(Locale.BTN_SELALL_ITEM);
         confAddProdButton.setText(Locale.BTN_CADD_ITEM);
+        helpButton.setText(Locale.BTN_HELP);
 
         prodNameLbl.setText(Locale.LB_PNAME);
         prodCantLbl.setText(Locale.LB_PCANT);
@@ -127,11 +168,13 @@ public class ListaCompraWindow extends JFrame {
         selallButton.addActionListener(controller);
         remButton.addActionListener(controller);
         confAddProdButton.addActionListener(controller);
+        helpButton.addActionListener(controller);
+        setSelMultChkBox.addActionListener(controller);
     }
 
     private void updateSize() {
         pack();
-        setMinimumSize(this.getSize());
+        //setMinimumSize(this.getSize());
     }
 
 }

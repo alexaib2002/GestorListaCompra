@@ -15,8 +15,10 @@ public class Locale {
 
     public static final String BTN_ADD_ITEM = "Agregar producto";
     public static final String BTN_SELALL_ITEM = "Seleccionar todos los productos";
-    public static final String BTN_REM_ITEM = "Eliminar productos seleccionados";
+    public static final String BTN_REM_ITEM_SINGLE = "Eliminar producto seleccionado";
+    public static final String BTN_REM_ITEM_MULTI = "Eliminar productos seleccionados";
     public static final String BTN_CADD_ITEM = "Confimar datos de producto";
+    public static final String BTN_HELP = "Mostrar/ocultar ayuda";
 
     public static final String LB_PNAME = "Nombre";
     public static final String LB_PCANT = "Cantidad";

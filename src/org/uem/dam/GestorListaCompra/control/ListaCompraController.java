@@ -4,6 +4,7 @@ import org.uem.dam.GestorListaCompra.model.Locale;
 import org.uem.dam.GestorListaCompra.model.Producto;
 import org.uem.dam.GestorListaCompra.view.ListaCompraWindow;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -28,7 +29,8 @@ public class ListaCompraController implements ActionListener {
             case Locale.BTN_ADD_ITEM:
                 showAddProdMenu();
                 break;
-            case Locale.BTN_REM_ITEM:
+            case Locale.BTN_REM_ITEM_SINGLE:
+            case Locale.BTN_REM_ITEM_MULTI:
                 remProducto();
                 break;
             case Locale.BTN_SELALL_ITEM:
@@ -37,8 +39,14 @@ public class ListaCompraController implements ActionListener {
             case Locale.BTN_CADD_ITEM:
                 confirmAddProducto();
                 break;
+            case Locale.BTN_HELP:
+                toggleHelp();
+                break;
+            case Locale.CHK_SET_MULT:
+                changeSelectionMode();
+                break;
             default:
-                System.out.println(String.format("[ ATENCIÓN ] Evento desconocido, no será gestionado %s", cmd));
+                System.out.println(String.format("[ ATENCIÓN ] Evento '%s' desconocido, no será gestionado", cmd));
         }
     }
 
@@ -86,6 +94,23 @@ public class ListaCompraController implements ActionListener {
         } else {
             window.showErrorMssg(Locale.ERR_STR_EMPTY);
             System.out.println("Inserción denegada");
+        }
+    }
+
+    private void toggleHelp() {
+        window.setVisibleTipsPanel(!window.getTipsPanel().isVisible());
+    }
+
+    private void changeSelectionMode() {
+        switch (window.getSelectionMode()) {
+            case ListSelectionModel.SINGLE_SELECTION:
+                System.out.println("Modo de selección multiple");
+                window.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+                break;
+            case ListSelectionModel.MULTIPLE_INTERVAL_SELECTION:
+                System.out.println("Modo de selección unico");
+                window.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                break;
         }
     }
 }
